@@ -1,0 +1,111 @@
+<?php
+/*****************************************************************************
+ *                                                                           *       
+ *       Copyright (c) 2017 kstrwind. All Rights Reserved                    *  
+ *                                                                           *
+ *****************************************************************************/
+
+/**
+ * @file    modules/Poker.php 
+ * @author  kstrwind
+ * @date    2017/03/08 17:46:51
+ * @brief   This decribe a Poker
+ **/
+
+class Poker
+{
+    const   HC  =   'heart';    //红心
+    const   SC  =   'spade';    //黑桃
+    const   DC  =   'diamond';  //方片
+    const   CC  =   'club';     //草花
+
+    //for limit 
+    const   MAX_DECK_NUMBER = 10;
+    const   MIN_DECK_NUMBER = 10;
+
+    public:
+        /**
+         * construct function to create poker
+         * @param: [in] [int] $pokerNum: poker number ,like 2 (54 * 2 cards)
+         * @param: [in] [bool] $withjoker: if use joker
+         * @return
+         */
+        function __construct($deckNum=1, $withjoker=true)
+        {
+            $this->error        = '';
+            $this->cards        = array();
+            $this->intDeck      = $deckNum;
+            $this->bolWithJokers= $withjoker;
+            $this->intPokerIndex= 0;
+        }
+        /**
+         * function to shuffle tjhe poker
+         * @param
+         * @return true
+         */
+        function shufflePoker()
+        {
+            $this->error        = '';
+        }
+
+        /**
+         * to get cards in deck has been shuffled
+         * @param: [in] [int] $intNumber: number of cards to gets;
+         * @return : false, get failed
+         * @return : succ, array('int index' => card)
+         */
+        function getCard($intNumber=1)
+        {
+            $this->error        = '';
+            if ($this->intPokerIndex + $intNumber > count($this->cards)){
+                $this->error    = 'get number over total cards number';
+                return false;
+            }
+            $res = array();
+            for ($i = 0; $i < $intNumber; $i++){
+                $res[$i+1]  = $this->cards[$this->intPokerIndex];
+                $this->intPokerIndex++;
+            }
+            return $res;
+        }
+        
+        /**
+         * set deck number, but effect after shuffer
+         * @param [int] $intNumber: deck number 
+         * @return: true for succ; false for param error
+         */
+        function setDeck($intNumber)
+        {
+            $this->error        = '';
+            if (intval($intNumber) < self::MIN_DECK_NUMBER
+                || intval($intNumber) > self::MAX_DECK_NUMBER){
+                $this->error        = 'Deck number overlimit [1, 10]';
+                return false;
+            }
+            $this->intDeck          = intval($intNumber);
+            return true;
+        }
+        /**
+         * set if user joker
+         * @param [in] [bool] $bolWithJoker: if use 
+         * @return : false for param error
+         */
+        function setWithJoker($bolWithJoker)
+        {
+            $this->error        = '';
+            //for boolval need php version > 5.5.0, so use is_bool to check
+            if (!is_bool($bolWithJoker)){
+                return false;
+            }
+
+            $this->bolWithJokers    = $bolWithJoker;
+            return true;
+        }
+
+    private:
+        $cards;
+        $intDeck;
+        $intPokerIndex;
+        $bolWithJokers;
+        $error;
+}
